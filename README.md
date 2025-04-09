@@ -70,8 +70,8 @@ The database consists of the following tables:
 ## Data Security and Consistency
 The database uses primary and foreign keys to ensure data consistency:
 
-- **Primary Keys**: For example, PESEL in the "Client" table and the unique policy number in the "Policy" table ensure unique identification of records.
-- **Foreign Keys**: For instance, the policy number in the "Insurance Conditions" table refers to the "Policy" table.
+- **Primary Keys**: For example, PESEL in the "Klient" table and the unique policy number in the "Polisa" table ensure unique identification of records.
+- **Foreign Keys**: For instance, the policy number in the "Warunki Ubezpieczenia" table refers to the "Polisa" table.
 - **Data Types and Constraints**: Constraints such as text field lengths and unique keys minimize data entry errors.
 
 ## Example Reports and Analytics
