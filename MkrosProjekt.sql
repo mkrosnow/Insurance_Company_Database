@@ -1,0 +1,261 @@
+-- Tworzenie tabel
+CREATE TABLE Ryzyko (
+    IdRyzyko INTEGER PRIMARY KEY,
+    Ryzyko_opis VARCHAR2(50)
+);
+
+CREATE TABLE Klient (
+    Pesel VARCHAR2(11) PRIMARY KEY,
+    Imie VARCHAR2(20),
+    Nazwisko VARCHAR2(20),
+    NrTelefonu NUMBER,
+    AdresKoresp_IdAdres INTEGER,
+    FOREIGN KEY (AdresKoresp_IdAdres) REFERENCES AdresKoresp(IdAdres)
+);
+
+CREATE TABLE AdresKoresp (
+    IdAdres INTEGER PRIMARY KEY,
+    Ulica VARCHAR2(20),
+    NrDomu INTEGER,
+    NrMieszkania INTEGER,
+    KodPocztowy VARCHAR2(6),
+    email VARCHAR2(30)
+);
+
+CREATE TABLE Polisa (
+    NrPolisy INTEGER PRIMARY KEY,
+    Typ VARCHAR2(20),
+    DataWaznosci DATE,
+    Klient_Pesel VARCHAR2(11),
+    FOREIGN KEY (Klient_Pesel) REFERENCES Klient(Pesel)
+);
+
+CREATE TABLE WarunkiUbezpieczenia (
+    Polisa_NrPolisy INTEGER,
+    Ryzyko_IdRyzyko INTEGER,
+    PRIMARY KEY (Polisa_NrPolisy, Ryzyko_IdRyzyko),
+    FOREIGN KEY (Polisa_NrPolisy) REFERENCES Polisa(NrPolisy),
+    FOREIGN KEY (Ryzyko_IdRyzyko) REFERENCES Ryzyko(IdRyzyko)
+);
+
+CREATE TABLE Nieruchomosc (
+    Ulica VARCHAR2(20),
+    NrDomu INTEGER,
+    NrMieszkania INTEGER,
+    KodPocztowy VARCHAR2(6),
+    PRIMARY KEY (Ulica, NrDomu, NrMieszkania, KodPocztowy),
+    FOREIGN KEY (Polisa_NrPolisy) REFERENCES Polisa(NrPolisy),
+    FOREIGN KEY (Klient_Pesel) REFERENCES Klient(Pesel)
+);
+
+CREATE TABLE Pracownik (
+    Id INTEGER PRIMARY KEY,
+    Imie VARCHAR2(20),
+    Nazwisko VARCHAR2(20)
+);
+
+CREATE TABLE TeczkaSzkodowa (
+    IdTeczki INTEGER PRIMARY KEY,
+    NazwaFirmaOględziny VARCHAR2(20),
+    NrRachunku VARCHAR2(20)
+);
+
+CREATE TABLE Roszczenie (
+    nrSzkody INTEGER PRIMARY KEY,
+    DataZdarzenia DATE,
+    DataRejestr DATE,
+    Ryzyko VARCHAR2(20),
+    Klient_Pesel VARCHAR2(11),
+    TeczkaSzkodowa_IdTeczki INTEGER,
+    Polisa_NrPolisy INTEGER,
+    PracownikRejestr_Id INTEGER,
+    PracownikDecyzyjny_Id INTEGER,
+    FOREIGN KEY (Klient_Pesel) REFERENCES Klient(Pesel),
+    FOREIGN KEY (TeczkaSzkodowa_IdTeczki) REFERENCES TeczkaSzkodowa(IdTeczki),
+    FOREIGN KEY (Polisa_NrPolisy) REFERENCES Polisa(NrPolisy),
+    FOREIGN KEY (PracownikRejestr_Id) REFERENCES Pracownik(Id),
+    FOREIGN KEY (PracownikDecyzyjny_Id) REFERENCES Pracownik(Id)
+);
+
+CREATE TABLE Dokument (
+    DataWysylania DATE,
+    Barcode VARCHAR2(20),
+    TeczkaSzkodowa_IdTeczki INTEGER,
+    FOREIGN KEY (TeczkaSzkodowa_IdTeczki) REFERENCES TeczkaSzkodowa(IdTeczki)
+);
+
+
+-- Ryzyko
+INSERT INTO Ryzyko (IdRyzyko, Ryzyko_opis) VALUES (1, 'Pożar');
+INSERT INTO Ryzyko (IdRyzyko, Ryzyko_opis) VALUES (2, 'Powódź');
+INSERT INTO Ryzyko (IdRyzyko, Ryzyko_opis) VALUES (3, 'Kradzież');
+INSERT INTO Ryzyko (IdRyzyko, Ryzyko_opis) VALUES (4, 'Upadek drzew i masztów');
+INSERT INTO Ryzyko (IdRyzyko, Ryzyko_opis) VALUES (5, 'Przepięcie');
+INSERT INTO Ryzyko (IdRyzyko, Ryzyko_opis) VALUES (6, 'Zalanie');
+INSERT INTO Ryzyko (IdRyzyko, Ryzyko_opis) VALUES (7, 'Pękanie na skutek mrozu');
+INSERT INTO Ryzyko (IdRyzyko, Ryzyko_opis) VALUES (8, 'Uderzenie pioruna');
+INSERT INTO Ryzyko (IdRyzyko, Ryzyko_opis) VALUES (9, 'Uderzenie pojazdu mechanicznego');
+INSERT INTO Ryzyko (IdRyzyko, Ryzyko_opis) VALUES (10, 'Upadek statku powietrznego');
+
+
+-- AdresKoresp
+INSERT INTO AdresKoresp (IdAdres, Ulica, NrDomu, NrMieszkania, KodPocztowy, email) 
+VALUES (1, 'Słoneczna', 10, 2, '00-123', 'jan.kowalski@outlook.com');
+INSERT INTO AdresKoresp (IdAdres, Ulica, NrDomu, NrMieszkania, KodPocztowy, email) 
+VALUES (2, 'Krótka', 5, 1, '01-456', 'anna.nowak@gmail.com');
+INSERT INTO AdresKoresp (IdAdres, Ulica, NrDomu, NrMieszkania, KodPocztowy, email) 
+VALUES (3, 'Wielka', 3, 4, '02-789', 'piotr.kaczmarek@hotmail.com');
+INSERT INTO AdresKoresp (IdAdres, Ulica, NrDomu, NrMieszkania, KodPocztowy, email) 
+VALUES (4, 'Nowa', 12, 1, '03-101', 'marta.wisniewska@yahoo.com');
+
+-- Klient
+INSERT INTO Klient (Pesel, Imie, Nazwisko, NrTelefonu, AdresKoresp_IdAdres) 
+VALUES ('12345678901', 'Jan', 'Kowalski', 123456789, 1);
+INSERT INTO Klient (Pesel, Imie, Nazwisko, NrTelefonu, AdresKoresp_IdAdres) 
+VALUES ('98765432109', 'Anna', 'Nowak', 987654321, 2);
+INSERT INTO Klient (Pesel, Imie, Nazwisko, NrTelefonu, AdresKoresp_IdAdres) 
+VALUES ('23456789012', 'Piotr', 'Kaczmarek', 234567890, 3);
+INSERT INTO Klient (Pesel, Imie, Nazwisko, NrTelefonu, AdresKoresp_IdAdres) 
+VALUES ('34567890123', 'Marta', 'Wiśniewska', 345678901, 4);
+
+-- Polisa
+INSERT INTO Polisa (NrPolisy, Typ, DataWaznosci, Klient_Pesel) VALUES (1001, 'Majątkowa', TO_DATE('2026-12-31', 'YYYY-MM-DD'), '12345678901');
+INSERT INTO Polisa (NrPolisy, Typ, DataWaznosci, Klient_Pesel) VALUES (1002, 'Majątkowa', TO_DATE('2028-11-21', 'YYYY-MM-DD'), '12345678901');
+INSERT INTO Polisa (NrPolisy, Typ, DataWaznosci, Klient_Pesel) VALUES (1003, 'Majątkowa', TO_DATE('2023-06-12', 'YYYY-MM-DD'), '98765432109');
+INSERT INTO Polisa (NrPolisy, Typ, DataWaznosci, Klient_Pesel) VALUES (1004, 'Majątkowa', TO_DATE('2028-12-04', 'YYYY-MM-DD'), '98765432109');
+INSERT INTO Polisa (NrPolisy, Typ, DataWaznosci, Klient_Pesel) VALUES (1005, 'Majątkowa', TO_DATE('2025-07-08', 'YYYY-MM-DD'), '23456789012');
+INSERT INTO Polisa (NrPolisy, Typ, DataWaznosci, Klient_Pesel) VALUES (1006, 'Majątkowa', TO_DATE('2026-07-31', 'YYYY-MM-DD'), '34567890123');
+INSERT INTO Polisa (NrPolisy, Typ, DataWaznosci, Klient_Pesel) VALUES (1007, 'Majątkowa', TO_DATE('2027-08-09', 'YYYY-MM-DD'), '12345678901');
+INSERT INTO Polisa (NrPolisy, Typ, DataWaznosci, Klient_Pesel) VALUES (1008, 'Majątkowa', TO_DATE('2021-12-21', 'YYYY-MM-DD'), '12345678901');
+INSERT INTO Polisa (NrPolisy, Typ, DataWaznosci, Klient_Pesel) VALUES (1009, 'Majątkowa', TO_DATE('2021-12-22', 'YYYY-MM-DD'), '12345678901');
+INSERT INTO Polisa (NrPolisy, Typ, DataWaznosci, Klient_Pesel) VALUES (1010, 'Majątkowa', TO_DATE('2026-12-31', 'YYYY-MM-DD'), '34567890123');
+
+
+-- WarunkiUbezpieczenia
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1001, 1);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1001, 3);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1001, 5);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1001, 10);
+
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1002, 2);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1002, 4);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1002, 6);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1002, 8);
+
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1003, 3);
+
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1004, 4);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1004, 8);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1004, 10);
+
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1005, 1);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1005, 2);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1005, 3);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1005, 5);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1005, 6);
+
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1006, 2);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1006, 3);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1006, 4);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1006, 7);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1006, 8);
+
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1007, 1);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1007, 8);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1007, 9);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1007, 10);
+
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1008, 1);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1008, 2);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1008, 3);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1008, 4);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1008, 5);
+
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1009, 1);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1009, 2);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1009, 9);
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1009, 10);
+
+INSERT INTO WarunkiUbezpieczenia (Polisa_NrPolisy, Ryzyko_IdRyzyko) 
+VALUES (1010, 10);
+
+
+-- Nieruchomosc
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Słoneczna', 10, 2, '00-123');
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Krótka', 5, 1, '01-456');
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Zielona', 8, 1, '02-556');
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Niska', 10, 2, '03-466');
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Ratuszowa', 8, 10, '46-286');
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Słoneczna', 2, 0, '76-260');
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Francuska', 10, 2, '06-888');
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Owocowa', 65, 34, '08-952');
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Marii Skłodowskiej Curie', 23, 1, '56-218');
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Angielska', 14, 2, '06-254');
+INSERT INTO Nieruchomosc (Ulica, NrDomu, NrMieszkania, KodPocztowy) VALUES ('Japońska', 56, 87, '23-555');
+
+-- Pracownik
+INSERT INTO Pracownik (Id, Imie, Nazwisko) 
+VALUES (1, 'Tomasz', 'Wójcik');
+INSERT INTO Pracownik (Id, Imie, Nazwisko) 
+VALUES (2, 'Maria', 'Zielińska');
+INSERT INTO Pracownik (Id, Imie, Nazwisko) 
+VALUES (3, 'Krzysztof', 'Nowak');
+INSERT INTO Pracownik (Id, Imie, Nazwisko) 
+VALUES (4, 'Monika', 'Kowalska');
+
+-- TeczkaSzkodowa
+INSERT INTO TeczkaSzkodowa (IdTeczki, NazwaFirmaOględziny, NrRachunku) VALUES (1, 'Mentax', '12345-67890');
+INSERT INTO TeczkaSzkodowa (IdTeczki, NazwaFirmaOględziny, NrRachunku) VALUES (2, 'Kama24', '98765-43210');
+
+-- Roszczenie
+INSERT INTO Roszczenie (nrSzkody, DataZdarzenia, DataRejestr, Ryzyko, Klient_Pesel, TeczkaSzkodowa_IdTeczki, Polisa_NrPolisy, PracownikRejestr_Id, PracownikDecyzyjny_Id) 
+VALUES (1, TO_DATE('2024-01-01', 'YYYY-MM-DD'), TO_DATE('2024-01-02', 'YYYY-MM-DD'), 'Pożar', '12345678901', 1, 1001, 1, 2);
+INSERT INTO Roszczenie (nrSzkody, DataZdarzenia, DataRejestr, Ryzyko, Klient_Pesel, TeczkaSzkodowa_IdTeczki, Polisa_NrPolisy, PracownikRejestr_Id, PracownikDecyzyjny_Id) 
+VALUES (2, TO_DATE('2024-02-15', 'YYYY-MM-DD'), TO_DATE('2024-02-16', 'YYYY-MM-DD'), 'Kradzież', '98765432109', 2, 1002, 2, 1);
+INSERT INTO Roszczenie (nrSzkody, DataZdarzenia, DataRejestr, Ryzyko, Klient_Pesel, TeczkaSzkodowa_IdTeczki, Polisa_NrPolisy, PracownikRejestr_Id, PracownikDecyzyjny_Id) 
+VALUES (3, TO_DATE('2024-03-01', 'YYYY-MM-DD'), TO_DATE('2024-03-02', 'YYYY-MM-DD'), 'Przepięcie', '23456789012', 3, 1003, 3, 4);
+
+-- Dokument
+INSERT INTO Dokument (DataWysylania, Barcode, TeczkaSzkodowa_IdTeczki) 
+VALUES (TO_DATE('2024-01-03', 'YYYY-MM-DD'), 'DOC10001', 1);
+INSERT INTO Dokument (DataWysylania, Barcode, TeczkaSzkodowa_IdTeczki) 
+VALUES (TO_DATE('2024-02-17', 'YYYY-MM-DD'), 'DOC10002', 2);
+INSERT INTO Dokument (DataWysylania, Barcode, TeczkaSzkodowa_IdTeczki) 
+VALUES (TO_DATE('2024-03-05', 'YYYY-MM-DD'), 'DOC10003', 3);
+
+COMMIT;
