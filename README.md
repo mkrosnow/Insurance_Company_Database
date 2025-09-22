@@ -46,10 +46,10 @@ The database consists of the following tables:
 - A table linking risks with specific policies.
 
 ### 5. Roszczenie
-- Stores information about reported claims, such as the event date, registration date, assigned risk, client data, documents, and responsible persons.
+- Stores information about reported claims, such as the event date, registration date, assigned risk, client data, documents, and decision-making workers.
 
 ### 6. Dokument
-- Contains data about documents related to claims, including the shipping date and barcode.
+- Contains data about documents related to claims, including the sent date and barcode.
 
 ### 7. Teczka Szkodowa
 - Stores information about inspection companies and bank account numbers associated with claims.
@@ -87,4 +87,5 @@ Based on the data in the database, the following reports can be generated:
 The database project for the Insurance Company is designed to manage data related to customers, policies, claims, and documents. With the table structure and relationships, the system allows for storing and quickly retrieving information, such as policy details, claim numbers, and documents related to claims folders. The designed database allows for adding new data and analyzing existing information, ensuring better management of information, which is expected to improve customer service quality and insurance processes in the company.
 
 ![Diagram](Towarzystwo_Ubezpieczeniowe-2025-03-28_23-02.png)
+
 
